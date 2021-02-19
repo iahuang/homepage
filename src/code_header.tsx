@@ -19,7 +19,7 @@ export default class CodeHeader extends Component<IProps, IState> {
 
 	typingPaused = false;
 
-	targetProgram: string;
+	targetProgram: string[];
 
     constructor(props: IProps) {
         super(props);
@@ -29,7 +29,27 @@ export default class CodeHeader extends Component<IProps, IState> {
             isCursorVisible: false,
         };
 
-		this.targetProgram = props.targetProgram;
+		this.targetProgram = props.targetProgram.split("");
+        let targetProgram = [];
+        let seq = "";
+        let i = 0;
+        while (i < this.targetProgram.length) {
+            let c = this.targetProgram[i]
+            if (c==" ") {
+                seq+=c;
+            }
+            if (c!=" ") {
+                if (seq) {
+                    targetProgram.push(seq);
+                }
+                targetProgram.push(c);
+                
+               
+                seq = "";
+            }
+            i++;
+        }
+        this.targetProgram = targetProgram;
 
         this.lastTypedCharTime = Date.now();
 		this.lastCursorBlinkTime = Date.now();
@@ -37,7 +57,7 @@ export default class CodeHeader extends Component<IProps, IState> {
     componentDidMount() {
         this.animInterval = window.setInterval(() => {
             this.animLoop();
-        }, 10);
+        }, 20);
     }
 
     componentWillUnmount() {
@@ -48,7 +68,7 @@ export default class CodeHeader extends Component<IProps, IState> {
         let timeSinceLastChar = Date.now() - this.lastTypedCharTime;
 
         if (timeSinceLastChar >= this.timeToNextChar && !this.typingPaused) {
-            this.timeToNextChar = randInt(20, 150);
+            this.timeToNextChar = randInt(20, 200);
 			if (randChance(0.01)) {
 				this.timeToNextChar = 1000;
 			}
@@ -99,10 +119,10 @@ export default class CodeHeader extends Component<IProps, IState> {
     }
 
     render() {
-        let codeText = this.targetProgram.substring(
+        let codeText = this.targetProgram.slice(
             0,
             this.state.codeTypingPosition
-        );
+        ).join("");
 
 		if (this.state.isCursorVisible) {
 			codeText+="▓";

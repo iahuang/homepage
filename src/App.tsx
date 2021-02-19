@@ -1,5 +1,6 @@
 import React from "react";
 import CodeHeader from "./code_header";
+import FloatingCube from "./floating_cube";
 import ProjectWidget from "./project_widget";
 
 const CODE = `char* lng (depopulated PreferredIndex_coloradj) {
@@ -55,6 +56,29 @@ function App() {
                     </span>
                 </div>
             </div>
+            <div className="page-bg">
+                <FloatingCube
+                    x={50}
+                    y={500}
+                    z={1}
+                    img="assets/cube0.png"
+                    scale={1}
+                ></FloatingCube>
+                <FloatingCube
+                    x={300}
+                    y={400}
+                    z={2}
+                    img="assets/cube1.png"
+                    scale={1}
+                ></FloatingCube>
+                <FloatingCube
+                    x={800}
+                    y={450}
+                    z={1.5}
+                    img="assets/cube2.png"
+                    scale={1}
+                ></FloatingCube>
+            </div>
             <div className="main">
                 <div className="columns">
                     <div className="column c1">
@@ -66,8 +90,8 @@ function App() {
                                     src="assets/icon2.png"
                                 ></img>
                                 <p>
-                                    I am a programming student currently
-                                    attending high school in Boston. I enjoy building things!
+                                    I am a student currently
+                                    attending high school in Boston. I enjoy designing and programming user interfaces.
                                 </p>
                             </div>
                         </div>

@@ -114,6 +114,10 @@
                             exploring the projects highlighted on my Github. You can also interact
                             with many of the items on this page.
                         </p>
+                        <p>
+                            The source code for this website can also be found
+                            <a href="https://github.com/iahuang/homepage">here</a>.
+                        </p>
                     </div>
                 </div>
             </div>

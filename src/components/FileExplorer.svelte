@@ -8,6 +8,7 @@
         node: "#7EC728",
         java: "#E01F22",
         "html/css": "#E36028",
+        uoft: "#012B64",
         mongodb: "#04AB4E",
     };
     const tagColorDefault = "#a6a6a6";
@@ -54,7 +55,7 @@
     let projects: ProjectInfo[] = [
         {
             name: "Oui-Eat",
-            tags: ["React Native", "Java", "MongoDB", "Azure"],
+            tags: ["React Native", "Java", "MongoDB", "UofT"],
             year: 2022,
             description:
                 "A combined social media app and crowd-sourced review platform for restaurants and other food businesses.",
@@ -62,7 +63,7 @@
         },
         {
             name: "NeX",
-            tags: ["Node", "Typescript"],
+            tags: ["Node", "Typescript", "LaTeX"],
             year: 2022,
             description:
                 "A custom-built markup language designed for efficient note-taking and drafting math and computer science-related documents.",
@@ -70,7 +71,7 @@
         },
         {
             name: "CoVariant",
-            tags: ["Python", "Deep Learning"],
+            tags: ["Python", "Deep Learning", "UofT"],
             year: 2021,
             description:
                 "Machine learning project for determining the impact of various demographic factors in the outcome of COVID-19.",

@@ -24,6 +24,7 @@
         font-weight: bold;
         font-size: 18pt;
         margin-bottom: 10px;
+        font-family: 'Roboto Mono', monospace;
     }
 
     

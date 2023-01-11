@@ -60,8 +60,12 @@
     let state_left: number;
     let state_visible = config.visible ?? true;
     let state_title = config.title ?? "";
-    let state_z_index = 0;
+    largestZIndex.update((z) => z + 1);
+    let state_z_index = get(largestZIndex);
+
     let state_maximized = false;
+
+    $: state_focused = $largestZIndex === state_z_index;
 
     let drag = {
         offsetX: 0,
@@ -99,8 +103,11 @@
     windowInterface.setWindowSize(config.width, config.height);
     windowInterface.setTitle(state_title);
     windowInterface.show();
+
+    $: buttonClass = state_focused ? "button" : "button unfocused";
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
     class="window"
     style:top={state_top + "px"}
@@ -109,6 +116,9 @@
     style:height={state_height !== null ? state_height + "px" : "auto"}
     style:display={state_visible ? "visible" : "none"}
     style:z-index={state_z_index}
+    on:click={() => {
+        windowInterface.focus();
+    }}
 >
     <div
         class="header"
@@ -129,15 +139,15 @@
         <div class="buttons">
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
-                class="button close"
+                class={buttonClass + " close"}
                 on:click={() => {
                     windowInterface.hide();
                 }}
             />
-            <div class="button minimize" />
+            <div class={buttonClass + " minimize"} />
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
-                class="button maximize"
+                class={buttonClass + " maximize"}
                 on:click={() => {
                     state_maximized = !state_maximized;
                     if (state_maximized) {
@@ -220,6 +230,11 @@
 
     .button.maximize {
         background-color: #9ed075;
+    }
+
+    .unfocused {
+        opacity: 0.4;
+        filter: saturate(0.2);
     }
 
     .buttons {

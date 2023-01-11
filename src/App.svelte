@@ -30,7 +30,7 @@
     if (isMobile) {
         aboutMeDims = {
             ...makeScaledWindowDimensions(0.9),
-            top: 10,
+            top: 20,
             left: 15,
         };
 
@@ -39,17 +39,29 @@
             left: 17,
             bottom: 10,
         };
+
+        contactDims = {
+            ...makeScaledWindowDimensions(0.9),
+            left: 19,
+            bottom: 20,
+        };
     } else {
         aboutMeDims = {
             ...makeScaledWindowDimensions(0.45),
-            top: 10,
+            top: 20,
             left: 15,
         };
 
         projectsDims = {
-            ...makeScaledWindowDimensions(0.5, 0.8),
+            ...makeScaledWindowDimensions(0.8, 0.5),
             top: 10,
             right: 10,
+        };
+
+        contactDims = {
+            ...makeScaledWindowDimensions(0.44, 0.5),
+            left: window.innerWidth * 0.3,
+            bottom: 20,
         };
     }
 </script>
@@ -57,38 +69,10 @@
 <main>
     <Background />
 
-    <Window config={{...aboutMeDims, title: "About Me"}}>
-        <DefaultStyledWindowContainer>
-            <div class="biography-container">
-                <div>
-                    <img class="pfp" src="/images/pfp.jpeg" alt="Profile" />
-                </div>
-                <div style="margin-left: 30px; margin-right: 10px">
-                    <span class="title" style="font-size: 24pt;">Ian Huang</span>
-                    <div>
-                        <p>
-                            Hi, I'm a software developer and student at the University of Toronto
-                            with specific interests in web development, systems programming, and
-                            machine learning.
-                        </p>
-                        <p>
-                            You can learn more about my work using the window on the right or by
-                            exploring the projects highlighted on my Github. You can also interact
-                            with many of the items on this page.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </DefaultStyledWindowContainer>
+    <Window config={{ ...projectsDims, title: "File Explorer" }}>
+        <FileExplorer />
     </Window>
-    <Window
-        config={{
-            ...makeScaledWindowDimensions(0.4, 0.5),
-            left: 18,
-            bottom: 20,
-            title: "Contact Info",
-        }}
-    >
+    <Window config={{ ...contactDims, title: "Contact Info" }}>
         <DefaultStyledWindowContainer>
             <span class="title"> Contact </span>
             <ContactCard
@@ -111,8 +95,29 @@
             />
         </DefaultStyledWindowContainer>
     </Window>
-    <Window config={{...projectsDims, title: "File Explorer"}}>
-        <FileExplorer></FileExplorer>
+    <Window config={{ ...aboutMeDims, title: "About Me" }}>
+        <DefaultStyledWindowContainer>
+            <div class="biography-container">
+                <div>
+                    <img class="pfp" src="/images/pfp.jpeg" alt="Profile" />
+                </div>
+                <div style="margin-left: 30px; margin-right: 10px">
+                    <span class="title" style="font-size: 24pt;">Ian Huang</span>
+                    <div>
+                        <p>
+                            Hi, I'm a software developer and student at the University of Toronto
+                            with specific interests in web development, systems programming, and
+                            machine learning.
+                        </p>
+                        <p>
+                            You can learn more about my work using the window on the right or by
+                            exploring the projects highlighted on my Github. You can also interact
+                            with many of the items on this page.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </DefaultStyledWindowContainer>
     </Window>
 </main>
 
@@ -142,6 +147,4 @@
         display: grid;
         grid-template-columns: 20% auto;
     }
-
-
 </style>

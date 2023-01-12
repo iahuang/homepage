@@ -53,7 +53,7 @@
             }}
         >
             <td class="icon"
-                ><span class="material-symbols-outlined"
+                ><span class="material-symbols-rounded"
                     >{file.isFolder ? "folder_open" : "description"}</span
                 ></td
             >
@@ -122,7 +122,7 @@
         font-size: 5pt;
     }
 
-    .icon > .material-symbols-outlined {
+    .icon > .material-symbols-rounded {
         font-size: 16pt;
         display: flex;
         justify-content: center;

@@ -81,10 +81,11 @@
                 darkMode.update((value) => !value);
             }}
         >
-            <span class="material-symbols-outlined">{$darkMode ? "light_mode" : "dark_mode"}</span>
+            <span class="material-symbols-rounded thick">{$darkMode ? "light_mode" : "dark_mode"}</span>
         </div>
-        {#each state_minimizedWindows as minimizedWindow}
-            <div class="status-item">
+
+        <div class="status-item minimized-windows">
+            {#each state_minimizedWindows as minimizedWindow}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <span
                     class="minimized-window"
@@ -95,20 +96,23 @@
                     }}
                 >
                     <span>{minimizedWindow.getTitle()}</span>
-                    <span class="material-symbols-outlined window-icon"> web_asset </span>
+                    <span class="material-symbols-rounded window-icon"> web_asset </span>
                 </span>
-            </div>
-        {/each}
+            {/each}
+        </div>
     </span>
     <span class="status-items right">
         <div class="status-item decorative-icon">
-            <span class="material-symbols-outlined" style="font-size: 14pt">bluetooth</span>
+            <span class="material-symbols-rounded thick" style="font-size: 14pt">bluetooth</span>
         </div>
         <div class="status-item decorative-icon">
-            <span class="material-symbols-outlined" style="font-size: 14pt">wifi</span>
+            <span class="material-symbols-rounded thick" style="font-size: 14pt">wifi</span>
         </div>
-        <div class="status-item">{dateAsWeekdayMonthDate(time)}</div>
-        <div class="status-item">{dateAsAMPMTime(time)}</div>
+        <div class="status-item decorative-icon">
+            <span class="material-symbols-rounded thick" style="font-size: 14pt">volume_up</span>
+        </div>
+        <div class="status-item date-time">{dateAsWeekdayMonthDate(time)}</div>
+        <div class="status-item date-time">{dateAsAMPMTime(time)}</div>
     </span>
 </div>
 
@@ -152,8 +156,18 @@
     }
 
     .status-item {
-        margin-left: 5px;
-        margin-right: 5px;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
+    .date-time {
+        font-size: 10pt;
+        font-weight: bold;
+        letter-spacing: 0.5pt;
+    }
+
+    .minimized-windows {
+        display: flex;
     }
 
     .minimized-window {
@@ -165,6 +179,9 @@
         padding-right: 8px;
         padding-top: 2px;
         padding-bottom: 2px;
+
+        margin-left: 2px;
+        margin-right: 2px;
 
         display: flex;
         flex-direction: row;
@@ -187,7 +204,7 @@
     }
 
     .decorative-icon {
-        opacity: 0.45;
+        opacity: 0.4;
         margin-left: 8px;
         margin-right: 8px;
     }

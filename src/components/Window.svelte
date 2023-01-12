@@ -268,7 +268,7 @@
             window.addEventListener("mouseup", release);
         }}
     >
-        <span class="material-symbols-outlined" style="font-size: 14pt;">drag_indicator</span>
+        <span class="material-symbols-rounded" style="font-size: 14pt;">drag_indicator</span>
     </div>
 </div>
 

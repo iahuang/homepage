@@ -222,6 +222,15 @@
                     termWindow.setPosition(x, y);
                 }, deltaTimeMs);
                 break;
+            case "disable-gravity":
+                if (!physics.enabled) {
+                    term.writeln("gravity is already disabled lmao");
+                    break;
+                }
+
+                physics.enabled = false;
+                window.clearInterval(physics.interval);
+                break;
             case "fullscreen":
                 document.body.requestFullscreen();
                 break;

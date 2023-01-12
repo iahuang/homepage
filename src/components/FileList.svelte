@@ -154,6 +154,8 @@
         height: 100%;
         position: relative;
         opacity: 0.8;
+
+        font-weight: 500;
     }
 
     .vcenter {

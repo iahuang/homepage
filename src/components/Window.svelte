@@ -327,9 +327,7 @@
         cursor: move;
     }
 
-    .title {
-        font-size: 10pt;
-
+    .title {    
         display: flex;
         align-items: center;
         justify-content: center;
@@ -337,6 +335,10 @@
 
         user-select: none;
         pointer-events: none;
+
+        font-size: 8.5pt;
+        font-weight: bold;
+        letter-spacing: 0.4pt;
     }
 
     .window-container {

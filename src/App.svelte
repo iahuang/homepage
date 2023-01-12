@@ -9,11 +9,18 @@
 
     import { darkMode, terminalWindowInterface } from "./store";
 
-    function makeScaledWindowDimensions(widthScale: number, aspectRatio?: number): any {
+    function makeScaledWindowDimensions(
+        widthScale: number,
+        aspectRatio?: number
+    ): { width: number; height: number | null } {
         return {
             width: window.innerWidth * widthScale,
             height: aspectRatio !== undefined ? window.innerWidth * widthScale * aspectRatio : null,
         };
+    }
+
+    function centerWindow(scaledWidth: number, scaledCenter: number): number {
+        return (scaledCenter - scaledWidth / 2) * window.innerWidth;
     }
 
     interface Dimensions {
@@ -60,24 +67,24 @@
         aboutMeDims = {
             ...makeScaledWindowDimensions(0.45),
             top: 20,
-            left: 15,
+            left: centerWindow(0.45, 0.4),
         };
 
         projectsDims = {
-            ...makeScaledWindowDimensions(0.8, 0.5),
-            top: 10,
-            right: 10,
+            ...makeScaledWindowDimensions(0.7, 0.5),
+            top: 0.1 * window.innerHeight,
+            left: centerWindow(0.8, 0.55),
         };
 
         contactDims = {
             ...makeScaledWindowDimensions(0.37),
-            right: window.innerWidth * 0.2,
+            left: centerWindow(0.37, 0.7),
             top: window.innerHeight * 0.5,
         };
 
         terminalDims = {
             ...makeScaledWindowDimensions(0.48, 0.6),
-            left: 0.24 * window.innerWidth,
+            left: centerWindow(0.48, 0.6),
             bottom: 43,
         };
     }
@@ -158,11 +165,11 @@
         color: #484848;
     }
     main.dark-mode {
-        color: #CAD3D8;
+        color: #cad3d8;
     }
 
     main.dark-mode > :global(a) {
-        color: #CAD3D8;
+        color: #cad3d8;
     }
     main.dark-mode :global(a:visited) {
         color: #7bbadd;

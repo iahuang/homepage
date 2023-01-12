@@ -1,10 +1,5 @@
-<script lang="ts">
-    export let tagColors: { [k: string]: string };
-    export let tagColorDefault: string;
-    export let files: FileInfo[];
-    export let onClick: (file: FileInfo) => void;
-
-    interface FileInfo {
+<script lang="ts" context="module">
+    export interface FileInfo {
         displayName: string;
         fileName: string;
         isFolder: boolean;
@@ -12,6 +7,13 @@
         year: number;
         description: string;
     }
+</script>
+
+<script lang="ts">
+    export let tagColors: { [k: string]: string };
+    export let tagColorDefault: string;
+    export let files: FileInfo[];
+    export let onClick: (file: FileInfo) => void;
 
     function getTagColor(tag: string): string {
         return tagColors[tag] ?? tagColorDefault;
@@ -46,10 +48,18 @@
                 onClick(file);
             }}
         >
-            <td class="icon"><span class="material-symbols-outlined">{file.isFolder ? "folder_open" : "description"}</span></td>
+            <td class="icon"
+                ><span class="material-symbols-outlined"
+                    >{file.isFolder ? "folder_open" : "description"}</span
+                ></td
+            >
             <td>
                 <div class="file-info">
-                    <span class="file-display-name" style:font-size={fontSizeFromName(file.displayName)}>{file.displayName}</span>
+                    <span
+                        class="file-display-name"
+                        style:font-size={fontSizeFromName(file.displayName)}
+                        >{file.displayName}</span
+                    >
                     <span class="file-name">{file.fileName}</span>
                 </div>
             </td>

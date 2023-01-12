@@ -3,7 +3,7 @@
 
     const config = {
         backgroundColor: "#FFFFFF",
-        dotColor: "#E3E3E3",
+        dotColor: "#d4d4d4",
         dotRadius: 2,
         dotSpacing: 48,
         gridOffset: 10,

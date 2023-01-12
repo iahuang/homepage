@@ -1,9 +1,32 @@
+<script context="module" lang="ts">
+    export interface WindowInterface {
+        setWindowSize(width: number, height: number): void;
+
+        hide(): void;
+        show(): void;
+
+        getDimensions(): { width: number; height: number };
+
+        getPosition(): { x: number; y: number };
+        setPosition(x: number, y: number): void;
+
+        setTitle(to: string): void;
+
+        focus(): void;
+
+        getWindowID(): string;
+
+        getTitle(): string;
+    }
+</script>
+
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
     import { get } from "svelte/store";
-    import { largestZIndex } from "../store";
+    import { largestZIndex, statusBarHeight } from "../store";
+    import { addWindowToStatusBar } from "./StatusBar.svelte";
 
-    export class WindowInterface {
+    class WindowInterfaceImpl implements WindowInterface {
         setWindowSize(width: number, height: number): void {
             state_width = width;
             state_height = height;
@@ -17,12 +40,26 @@
             state_visible = true;
         }
 
+        getDimensions(): { width: number; height: number } {
+            return {
+                width: state_width,
+                height: state_height,
+            };
+        }
+
+        getPosition(): { x: number; y: number } {
+            return {
+                x: state_left,
+                y: state_top,
+            };
+        }
+
         setPosition(x: number, y: number): void {
             state_top = y;
             state_left = x;
 
             // clip window position to screen
-            if (state_top < 0) state_top = 0;
+            if (state_top < get(statusBarHeight)) state_top = get(statusBarHeight);
             if (state_left < 0) state_left = 0;
             if (state_top + state_height > window.innerHeight)
                 state_top = window.innerHeight - state_height;
@@ -37,6 +74,14 @@
         focus(): void {
             largestZIndex.update((z) => z + 1);
             state_z_index = get(largestZIndex);
+        }
+
+        getWindowID(): string {
+            return windowID;
+        }
+
+        getTitle(): string {
+            return state_title;
         }
     }
 
@@ -63,6 +108,8 @@
     largestZIndex.update((z) => z + 1);
     let state_z_index = get(largestZIndex);
 
+    const windowID = Math.random().toString(36);
+
     let state_maximized = false;
 
     $: state_focused = $largestZIndex === state_z_index;
@@ -73,7 +120,7 @@
         dragging: false,
     };
 
-    export const windowInterface = new WindowInterface();
+    export const windowInterface = new WindowInterfaceImpl();
 
     function dragManager(event: MouseEvent): void {
         if (drag.dragging) {
@@ -105,6 +152,12 @@
     windowInterface.show();
 
     $: buttonClass = state_focused ? "button" : "button unfocused";
+
+    statusBarHeight.subscribe((height) => {
+        if (state_top < height) {
+            state_top = height;
+        }
+    });
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -114,7 +167,7 @@
     style:left={state_left + "px"}
     style:width={state_width + "px"}
     style:height={state_height !== null ? state_height + "px" : "auto"}
-    style:display={state_visible ? "visible" : "none"}
+    style:visibility={state_visible ? "visible" : "hidden"}
     style:z-index={state_z_index}
     on:click={() => {
         windowInterface.focus();
@@ -144,15 +197,24 @@
                     windowInterface.hide();
                 }}
             />
-            <div class={buttonClass + " minimize"} />
+            <div
+                class={buttonClass + " minimize"}
+                on:click={() => {
+                    windowInterface.hide();
+                    addWindowToStatusBar(windowInterface);
+                }}
+            />
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
                 class={buttonClass + " maximize"}
                 on:click={() => {
                     state_maximized = !state_maximized;
                     if (state_maximized) {
-                        windowInterface.setWindowSize(window.innerWidth, window.innerHeight);
-                        windowInterface.setPosition(0, 0);
+                        windowInterface.setWindowSize(
+                            window.innerWidth,
+                            window.innerHeight - get(statusBarHeight)
+                        );
+                        windowInterface.setPosition(0, get(statusBarHeight));
                     } else {
                         windowInterface.setWindowSize(config.width, config.height);
                         windowInterface.setPosition(state_left, state_top);
@@ -220,16 +282,22 @@
     .button.close {
         background-color: #ff5555;
     }
-    .button.button.close:hover {
+    .button.close:hover {
         background-color: #ff7f7f;
     }
 
     .button.minimize {
         background-color: #ffd438;
     }
+    .button.minimize:hover {
+        background-color: #ffe06a;
+    }
 
     .button.maximize {
         background-color: #9ed075;
+    }
+    .button.maximize:hover {
+        background-color: #b7e08a;
     }
 
     .unfocused {

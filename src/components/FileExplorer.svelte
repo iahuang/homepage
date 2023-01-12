@@ -1,19 +1,7 @@
-<script lang="ts">
-    import FileList from "./FileList.svelte";
+<script lang="ts" context="module">
+    import FileList, { FileInfo } from "./FileList.svelte";
 
-    const tagColors = {
-        typescript: "#2F73BF",
-        python: "#f8ae26",
-        azure: "#0285D0",
-        node: "#7EC728",
-        java: "#E01F22",
-        "html/css": "#E36028",
-        uoft: "#012B64",
-        mongodb: "#04AB4E",
-    };
-    const tagColorDefault = "#a6a6a6";
-
-    interface ProjectInfo {
+    export interface ProjectInfo {
         name: string;
         tags: string[];
         year: number;
@@ -21,7 +9,7 @@
         link: string;
     }
 
-    interface BlogArticleInfo {
+    export interface BlogArticleInfo {
         name: string;
         tags: string[];
         publishDate: Date;
@@ -29,7 +17,7 @@
         link: string;
     }
 
-    function projectInfoToFileInfo(project: ProjectInfo): any {
+    export function projectInfoToFileInfo(project: ProjectInfo): FileInfo {
         return {
             displayName: project.name,
             fileName: project.name.toLowerCase().replace(" ", "_").replace("-", "_") + ".proj",
@@ -40,7 +28,7 @@
         };
     }
 
-    function blogInfoToFileInfo(blog: BlogArticleInfo): any {
+    export function blogInfoToFileInfo(blog: BlogArticleInfo): FileInfo {
         let d = blog.publishDate;
         return {
             displayName: blog.name,
@@ -52,7 +40,7 @@
         };
     }
 
-    let projects: ProjectInfo[] = [
+    export const projects: ProjectInfo[] = [
         {
             name: "Oui-Eat",
             tags: ["React Native", "Java", "MongoDB", "UofT"],
@@ -82,7 +70,7 @@
             tags: ["Python", "Algorithm Analyis"],
             year: 2021,
             description: "A multi-variable time complexity analysis library written in Python",
-            link: "https://github.com/iahuang/theta"
+            link: "https://github.com/iahuang/theta",
         },
         {
             name: "Taro",
@@ -96,15 +84,29 @@
             tags: ["Java"],
             description: "A work-in-progress Atari 2600 emulator written in Java.",
             year: 2018,
-            link: "https://github.com/iahuang/JAtari"
-        }
+            link: "https://github.com/iahuang/JAtari",
+        },
     ];
+</script>
 
+<script lang="ts">
+    const tagColors = {
+        typescript: "#2F73BF",
+        python: "#f8ae26",
+        azure: "#0285D0",
+        node: "#7EC728",
+        java: "#E01F22",
+        "html/css": "#E36028",
+        uoft: "#012B64",
+        mongodb: "#04AB4E",
+    };
+    const tagColorDefault = "#a6a6a6";
 </script>
 
 <div class="main">
     <span class="section-header">projects/</span>
     <hr />
+
     <FileList
         files={projects.map((p) => projectInfoToFileInfo(p))}
         {tagColors}
@@ -115,7 +117,7 @@
             window.location.href = project.link;
         }}
     />
-    <div style="height: 20px;"></div>
+    <div style="height: 20px;" />
 </div>
 
 <style>
@@ -130,7 +132,7 @@
         font-size: 16pt;
         margin-bottom: 10px;
         font-weight: bold;
-        font-family: 'Roboto Mono', monospace;
+        font-family: "Roboto Mono", monospace;
     }
 
     hr {

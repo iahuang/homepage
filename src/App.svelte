@@ -3,7 +3,11 @@
     import ContactCard from "./components/ContactCard.svelte";
     import DefaultStyledWindowContainer from "./components/DefaultStyledWindowContainer.svelte";
     import FileExplorer from "./components/FileExplorer.svelte";
+    import StatusBar from "./components/StatusBar.svelte";
+    import Terminal from "./components/Terminal.svelte";
     import Window from "./components/Window.svelte";
+
+    import { terminalWindowInterface } from "./store";
 
     function makeScaledWindowDimensions(widthScale: number, aspectRatio?: number): any {
         return {
@@ -24,6 +28,7 @@
     let aboutMeDims: Dimensions;
     let projectsDims: Dimensions;
     let contactDims: Dimensions;
+    let terminalDims: Dimensions;
 
     const isMobile = window.innerWidth < window.innerHeight;
 
@@ -63,12 +68,21 @@
             left: window.innerWidth * 0.3,
             bottom: 20,
         };
+
+        terminalDims = {
+            ...makeScaledWindowDimensions(0.37, 0.6),
+            left: 0.24 * window.innerWidth,
+            bottom: 43,
+        };
     }
 </script>
 
 <main>
     <Background />
-
+    <StatusBar />
+    <Window config={{ ...terminalDims, title: "Terminal" }} bind:windowInterface={$terminalWindowInterface}>
+        <Terminal />
+    </Window>
     <Window config={{ ...projectsDims, title: "File Explorer" }}>
         <FileExplorer />
     </Window>

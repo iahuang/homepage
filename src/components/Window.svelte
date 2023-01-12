@@ -117,14 +117,25 @@
     let drag = {
         offsetX: 0,
         offsetY: 0,
-        dragging: false,
+        moving: false,
+        resizing: false,
     };
 
     export const windowInterface = new WindowInterfaceImpl();
 
     function dragManager(event: MouseEvent): void {
-        if (drag.dragging) {
+        if (drag.moving) {
             windowInterface.setPosition(event.clientX - drag.offsetX, event.clientY - drag.offsetY);
+        }
+
+        if (drag.resizing) {
+            let width = event.clientX - state_left + drag.offsetX;
+            let height = event.clientY - state_top + drag.offsetX;
+
+            if (width < 100) width = 100;
+            if (height < 100) height = 100;
+
+            windowInterface.setWindowSize(width, height);
         }
     }
 
@@ -169,24 +180,29 @@
     style:height={state_height !== null ? state_height + "px" : "auto"}
     style:visibility={state_visible ? "visible" : "hidden"}
     style:z-index={state_z_index}
-    on:click={() => {
+    on:click={(ev) => {
         windowInterface.focus();
     }}
 >
     <div
         class="header"
         on:mousedown={(ev) => {
-            drag.dragging = true;
+            if (ev.target !== ev.currentTarget) {
+                return;
+            }
+
+            drag.moving = true;
             drag.offsetX = ev.offsetX;
             drag.offsetY = ev.offsetY;
 
+            windowInterface.focus();
+
             function release() {
-                drag.dragging = false;
+                drag.moving = false;
                 window.removeEventListener("mouseup", release);
             }
 
             window.addEventListener("mouseup", release);
-            windowInterface.focus();
         }}
     >
         <div class="buttons">
@@ -228,6 +244,28 @@
     </div>
     <div class="window-container">
         <slot />
+        {#if !state_focused}
+            <div class="focus-overlay" />
+        {/if}
+    </div>
+    <div
+        class="resize-handle"
+        on:mousedown={(ev) => {
+            drag.resizing = true;
+            drag.offsetX = ev.offsetX;
+            drag.offsetY = ev.offsetY;
+
+            windowInterface.focus();
+
+            function release() {
+                drag.resizing = false;
+                window.removeEventListener("mouseup", release);
+            }
+
+            window.addEventListener("mouseup", release);
+        }}
+    >
+        <span class="material-symbols-outlined" style="font-size: 14pt;">drag_indicator</span>
     </div>
 </div>
 
@@ -243,6 +281,27 @@
         border: 1px solid #e9e9e9;
 
         overflow: hidden;
+    }
+
+    .focus-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0);
+        z-index: 1;
+    }
+
+    .resize-handle {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        user-select: none;
+        opacity: 0.5;
+        cursor: nwse-resize;
+
+        -webkit-text-stroke: 0.5px white;
     }
 
     .header {
@@ -263,9 +322,11 @@
         height: 100%;
 
         user-select: none;
+        pointer-events: none;
     }
 
     .window-container {
+        position: relative;
         display: flex;
         overflow: scroll;
     }

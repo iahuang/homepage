@@ -20,7 +20,7 @@
             );
         }
 
-        fs.writeFileSync("/README.txt", "wow u found me :O\r\nuse \"enable-gravity\"");
+        fs.writeFileSync("/README.txt", 'wow u found me :O\r\nuse "enable-gravity"');
     });
 </script>
 
@@ -174,7 +174,20 @@
         }
     }
 
+    function fixFonts() {
+        let localStorage = window.localStorage;
+
+        if (!localStorage.getItem("fixed")) {
+            localStorage.setItem("fixed", "true");
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+    }
+
     onMount(() => {
+        fixFonts();
+
         term.open(target);
         fitAddon.fit();
         prompt();

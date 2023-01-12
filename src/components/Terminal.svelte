@@ -3,6 +3,7 @@
     import * as fs from "fs";
     import * as path from "path";
     import { projectInfoToFileInfo, projects } from "./FileExplorer.svelte";
+    import FontFaceObserver from "fontfaceobserver";
 
     BrowserFS.configure({ fs: "InMemory" }, () => {
         fileSystemReady.set(true);
@@ -22,11 +23,44 @@
 
         fs.writeFileSync("/README.txt", 'wow u found me :O\r\nuse "enable-gravity"');
     });
+
+    /**
+     * Adapted from https://github.com/CoderPad/xterm-webfont
+     */
+    class XtermWebfont implements ITerminalAddon {
+        _terminal: Terminal;
+
+        activate(terminal) {
+            this._terminal = terminal;
+
+            terminal.loadWebfontAndOpen = (element) => {
+                const fontFamily = this._terminal.options.fontFamily;
+                const regular = new FontFaceObserver(fontFamily).load();
+                const bold = new FontFaceObserver(fontFamily, { weight: "bold" }).load();
+
+                return (regular.constructor as any).all([regular, bold]).then(
+                    () => {
+                        this._terminal.open(element);
+                        return this;
+                    },
+                    () => {
+                        this._terminal.options.fontFamily = "Courier";
+                        this._terminal.open(element);
+                        return this;
+                    }
+                );
+            };
+        }
+
+        dispose() {
+            delete (this._terminal as any).loadWebfontAndOpen;
+        }
+    }
 </script>
 
 <script lang="ts">
     import { onMount } from "svelte";
-    import xterm from "xterm";
+    import xterm, { ITerminalAddon, Terminal } from "xterm";
     import { FitAddon } from "xterm-addon-fit";
     import { fileSystemReady, terminalWindowInterface } from "../store";
     import { get } from "svelte/store";
@@ -37,6 +71,8 @@
     });
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
+    term.loadAddon(new XtermWebfont());
+
     let target: HTMLElement;
     let promptLength = 0;
 
@@ -173,22 +209,8 @@
                 term.writeln(`Unrecognized command "${command}"`);
         }
     }
-
-    function fixFonts() {
-        let localStorage = window.localStorage;
-
-        if (!localStorage.getItem("fixed")) {
-            localStorage.setItem("fixed", "true");
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
-        }
-    }
-
     onMount(() => {
-        fixFonts();
-
-        term.open(target);
+        (term as any).loadWebfontAndOpen(target);
         fitAddon.fit();
         prompt();
 

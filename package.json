@@ -27,7 +27,9 @@
   "dependencies": {
     "@rollup/plugin-alias": "^4.0.2",
     "@rollup/plugin-inject": "^5.0.3",
+    "@types/fontfaceobserver": "^2.1.0",
     "browserfs": "^1.4.3",
+    "fontfaceobserver": "^2.3.0",
     "rollup-plugin-polyfill-node": "^0.11.0",
     "sirv-cli": "^2.0.0",
     "xterm": "^5.1.0",

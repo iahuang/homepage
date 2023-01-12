@@ -1,4 +1,5 @@
 <script lang="ts" context="module">
+    import { darkMode } from "../store";
     import FileList, { FileInfo } from "./FileList.svelte";
 
     export interface ProjectInfo {
@@ -103,7 +104,7 @@
     const tagColorDefault = "#a6a6a6";
 </script>
 
-<div class="main">
+<div class="main" class:dark-mode={$darkMode} >
     <span class="section-header">projects/</span>
     <hr />
 
@@ -142,5 +143,8 @@
         margin-bottom: 20px;
         box-sizing: border-box;
         height: 1px;
+    }
+    .dark-mode hr {
+        border-bottom: 1px solid rgba(203, 203, 203, 0.2);
     }
 </style>

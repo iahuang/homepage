@@ -23,7 +23,7 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
     import { get } from "svelte/store";
-    import { largestZIndex, statusBarHeight } from "../store";
+    import { darkMode, largestZIndex, statusBarHeight } from "../store";
     import { addWindowToStatusBar } from "./StatusBar.svelte";
 
     class WindowInterfaceImpl implements WindowInterface {
@@ -162,8 +162,6 @@
     windowInterface.setTitle(state_title);
     windowInterface.show();
 
-    $: buttonClass = state_focused ? "button" : "button unfocused";
-
     statusBarHeight.subscribe((height) => {
         if (state_top < height) {
             state_top = height;
@@ -174,6 +172,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
     class="window"
+    class:dark-mode={$darkMode}
     style:top={state_top + "px"}
     style:left={state_left + "px"}
     style:width={state_width + "px"}
@@ -186,6 +185,7 @@
 >
     <div
         class="header"
+        class:dark-mode={$darkMode}
         on:mousedown={(ev) => {
             if (ev.target !== ev.currentTarget) {
                 return;
@@ -208,13 +208,15 @@
         <div class="buttons">
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
-                class={buttonClass + " close"}
+                class={"button close"}
+                class:unfocused={!state_focused}
                 on:click={() => {
                     windowInterface.hide();
                 }}
             />
             <div
-                class={buttonClass + " minimize"}
+                class={"button minimize"}
+                class:unfocused={!state_focused}
                 on:click={() => {
                     windowInterface.hide();
                     addWindowToStatusBar(windowInterface);
@@ -222,7 +224,8 @@
             />
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
-                class={buttonClass + " maximize"}
+                class={"button maximize"}
+                class:unfocused={!state_focused}
                 on:click={() => {
                     state_maximized = !state_maximized;
                     if (state_maximized) {
@@ -273,14 +276,21 @@
     .window {
         box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.375);
         border-radius: 6px;
-        background-color: white;
+
         position: absolute;
 
         display: grid;
         grid-template-rows: 28px auto;
-        border: 1px solid #e9e9e9;
 
         overflow: hidden;
+        
+        background-color: white;
+        border: 1px solid #e9e9e9;
+    }
+
+    .window.dark-mode {
+        background-color: #181B21;
+        border: 1px solid #30323d;
     }
 
     .focus-overlay {
@@ -305,10 +315,14 @@
     }
 
     .header {
-        border-bottom: 1px solid #e9e9e9;
         position: relative;
         color: #7a7a7a;
+        border-bottom: 1px solid #e9e9e9;
     }
+    .header.dark-mode {
+        border-bottom: none;
+    }
+
     .header:hover {
         cursor: move;
     }
@@ -361,9 +375,8 @@
         background-color: #b7e08a;
     }
 
-    .unfocused {
-        opacity: 0.4;
-        filter: saturate(0.2);
+    .button.unfocused {
+        background-color: #b4b4b4;
     }
 
     .buttons {

@@ -1,9 +1,17 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
+    import { darkMode } from "../store";
 
-    const config = {
+    const lightColors = {
         backgroundColor: "#FFFFFF",
         dotColor: "#d4d4d4",
+    };
+    const darkColors = {
+        backgroundColor: "#121419",
+        dotColor: "#292c38",
+    };
+
+    const config = {
         dotRadius: 2,
         dotSpacing: 48,
         gridOffset: 10,
@@ -19,17 +27,18 @@
     }
 
     function drawBackground(): void {
+        let colors = $darkMode ? darkColors : lightColors;
         let ctx = canvas.getContext("2d");
 
         // clear background
         ctx.beginPath();
         ctx.rect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = colors.backgroundColor;
         ctx.fill();
 
         // draw dots
 
-        ctx.fillStyle = config.dotColor;
+        ctx.fillStyle = colors.dotColor;
 
         for (let x = config.gridOffset; x <= canvas.width; x += config.dotSpacing) {
             for (let y = config.gridOffset; y <= canvas.height; y += config.dotSpacing) {
@@ -39,6 +48,10 @@
             }
         }
     }
+
+    darkMode.subscribe((isDarkMode) => {
+        if (canvas) drawBackground();
+    });
 
     onMount(() => {
         window.addEventListener("resize", resizeHandler);

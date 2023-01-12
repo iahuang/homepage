@@ -7,7 +7,7 @@
     import Terminal from "./components/Terminal.svelte";
     import Window from "./components/Window.svelte";
 
-    import { terminalWindowInterface } from "./store";
+    import { darkMode, terminalWindowInterface } from "./store";
 
     function makeScaledWindowDimensions(widthScale: number, aspectRatio?: number): any {
         return {
@@ -83,13 +83,16 @@
     }
 </script>
 
-<main>
+<main class:dark-mode={$darkMode}>
     <Background />
     <StatusBar />
     <Window config={{ ...projectsDims, title: "File Explorer" }}>
         <FileExplorer />
     </Window>
-    <Window config={{ ...terminalDims, title: "Terminal" }} bind:windowInterface={$terminalWindowInterface}>
+    <Window
+        config={{ ...terminalDims, title: "Terminal" }}
+        bind:windowInterface={$terminalWindowInterface}
+    >
         <Terminal />
     </Window>
     <Window config={{ ...contactDims, title: "Contact Info" }}>
@@ -151,6 +154,11 @@
         padding: 1em;
         max-width: 240px;
         margin: 0 auto;
+
+        color: #484848;
+    }
+    main.dark-mode {
+        color: #CAD3D8;
     }
 
     @media (min-width: 640px) {

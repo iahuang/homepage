@@ -62,15 +62,19 @@
     import { onMount } from "svelte";
     import xterm, { ITerminalAddon, Terminal } from "xterm";
     import { FitAddon } from "xterm-addon-fit";
-    import { fileSystemReady, terminalWindowInterface } from "../store";
+    import { darkMode, fileSystemReady, terminalWindowInterface } from "../store";
     import { get } from "svelte/store";
     import type { WindowInterface } from "./Window.svelte";
 
     const term = new xterm.Terminal({
         fontFamily: "Roboto Mono",
     });
+
+    let terminalLoaded = false;
+
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
+
     term.loadAddon(new XtermWebfont());
 
     let target: HTMLElement;
@@ -94,8 +98,21 @@
 
     function getCurrentCommand(): string {
         let currentLine = term.buffer.active
-            .getLine(term.buffer.active.cursorY)
+            .getLine(term.buffer.active.cursorY + term.buffer.active.viewportY)
             .translateToString(true);
+
+        // console.log(
+        //     Array(term.buffer.active.cursorY + term.buffer.active.viewportY + 1)
+        //         .fill(null)
+        //         .map(
+        //             (_, i) =>
+        //                 (i < 10 ? " " : "") +
+        //                 i.toString() +
+        //                 " " +
+        //                 term.buffer.active.getLine(i).translateToString(true)
+        //         )
+        //         .join("\n")
+        // );
 
         return currentLine.slice(promptLength);
     }
@@ -209,10 +226,13 @@
                 term.writeln(`Unrecognized command "${command}"`);
         }
     }
+
     onMount(() => {
         (term as any).loadWebfontAndOpen(target);
         fitAddon.fit();
         prompt();
+
+        terminalLoaded = true;
 
         term.onData((char) => {
             switch (char) {
@@ -258,17 +278,50 @@
         brightWhite: "#FFFFFF",
     };
 
+    const darkTheme = {
+        foreground: "#CAD3D8",
+        background: "#181B21",
+        selection: "#5DA5D533",
+        black: "#1E1E1D",
+        brightBlack: "#262625",
+        red: "#CE5C5C",
+        brightRed: "#FF7272",
+        green: "#5BCC5B",
+        brightGreen: "#72FF72",
+        yellow: "#CCCC5B",
+        brightYellow: "#FFFF72",
+        blue: "#5D5DD3",
+        brightBlue: "#7279FF",
+        magenta: "#BC5ED1",
+        brightMagenta: "#E572FF",
+        cyan: "#5DA5D5",
+        brightCyan: "#72F0FF",
+        white: "#CAD3D8",
+        brightWhite: "#FFFFFF",
+    };
+
     term.options.theme = baseTheme;
+
+    let currentTheme = get(darkMode) ? darkTheme : baseTheme;
+
+    darkMode.subscribe((dark) => {
+        currentTheme = get(darkMode) ? darkTheme : baseTheme;
+        term.options.theme = currentTheme;
+
+        if (terminalLoaded) term.refresh(0, term.rows - 1);
+    });
 </script>
 
-<div class="main" bind:this={target} style:background-color={baseTheme.background} />
+<div class="main" bind:this={target} style:background-color={currentTheme.background} />
 
 <style>
     .main {
         width: 100%;
         height: 100%;
         text-align: left;
-        padding: 5px;
+        padding: 10px;
         box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 </style>

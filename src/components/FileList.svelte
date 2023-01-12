@@ -10,6 +10,9 @@
 </script>
 
 <script lang="ts">
+    import { darkMode } from "../store";
+
+
     export let tagColors: { [k: string]: string };
     export let tagColorDefault: string;
     export let files: FileInfo[];
@@ -33,7 +36,7 @@
 </script>
 
 <table>
-    <tr>
+    <tr class:dark-mode={$darkMode}>
         <th style="width: 5%" />
         <th style="width: 15%">Name</th>
         <th style="width: 6%">Year</th>
@@ -44,6 +47,7 @@
     {#each files as file}
         <tr
             class="file-row"
+            class:dark-mode={$darkMode}
             on:click={() => {
                 onClick(file);
             }}
@@ -133,6 +137,9 @@
     .file-row:nth-child(2n + 1) {
         background-color: rgb(244, 244, 244);
     }
+    .file-row:nth-child(2n + 1).dark-mode {
+        background-color: #1D2027;
+    }
 
     .file-row > td:first-child {
         border-top-left-radius: 10px;
@@ -167,6 +174,9 @@
 
     th:nth-child(n + 2) {
         border-left: 1px solid rgb(227, 227, 227);
+    }
+    tr.dark-mode > th:nth-child(n + 2) {
+        border-left: 1px solid rgba(227, 227, 227, 0.2);
     }
 
     th {

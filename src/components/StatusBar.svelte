@@ -18,7 +18,7 @@
 
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
-    import { statusBarHeight, minimizedWIndows as minimizedWindows } from "../store";
+    import { statusBarHeight, minimizedWIndows as minimizedWindows, darkMode } from "../store";
 
     let time = new Date();
     let interval: number;
@@ -72,16 +72,28 @@
     });
 </script>
 
-<div class="status-bar" bind:this={statusBar}>
+<div class="status-bar" bind:this={statusBar} class:dark-mode={$darkMode}>
     <span class="status-items left">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div
+            style="cursor: pointer;"
+            on:click={() => {
+                darkMode.update((value) => !value);
+            }}
+        >
+            <span class="material-symbols-outlined">{$darkMode ? "light_mode" : "dark_mode"}</span>
+        </div>
         {#each state_minimizedWindows as minimizedWindow}
             <div class="status-item">
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <span class="minimized-window" on:click={()=>{
-                    minimizedWindow.show();
-                    minimizedWindow.focus();
-                    removeWindowFromStatusBar(minimizedWindow);
-                }}>
+                <span
+                    class="minimized-window"
+                    on:click={() => {
+                        minimizedWindow.show();
+                        minimizedWindow.focus();
+                        removeWindowFromStatusBar(minimizedWindow);
+                    }}
+                >
                     <span>{minimizedWindow.getTitle()}</span>
                     <span class="material-symbols-outlined window-icon"> web_asset </span>
                 </span>
@@ -89,10 +101,10 @@
         {/each}
     </span>
     <span class="status-items right">
-        <div class="status-item">
+        <div class="status-item decorative-icon">
             <span class="material-symbols-outlined" style="font-size: 14pt">bluetooth</span>
         </div>
-        <div class="status-item">
+        <div class="status-item decorative-icon">
             <span class="material-symbols-outlined" style="font-size: 14pt">wifi</span>
         </div>
         <div class="status-item">{dateAsWeekdayMonthDate(time)}</div>
@@ -126,6 +138,12 @@
         box-sizing: border-box;
     }
 
+    .dark-mode.status-bar {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid #e9e9e916;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
     .status-items {
         display: flex;
         flex-direction: row;
@@ -134,8 +152,8 @@
     }
 
     .status-item {
-        margin-left: 7px;
-        margin-right: 7px;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 
     .minimized-window {
@@ -158,8 +176,19 @@
         background-color: rgba(197, 197, 197, 0.3);
     }
 
+    .dark-mode .minimized-window {
+        background-color: rgba(197, 197, 197, 0.64);
+        color: black;
+    }
+
     .window-icon {
         margin-left: 5px;
         font-size: 14pt;
+    }
+
+    .decorative-icon {
+        opacity: 0.45;
+        margin-left: 8px;
+        margin-right: 8px;
     }
 </style>

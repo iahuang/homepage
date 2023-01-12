@@ -46,9 +46,15 @@
         };
 
         contactDims = {
-            ...makeScaledWindowDimensions(0.9),
+            ...makeScaledWindowDimensions(0.9, 0.5),
             left: 19,
             bottom: 20,
+        };
+
+        terminalDims = {
+            ...makeScaledWindowDimensions(0.9, 0.6),
+            left: 0.24 * window.innerWidth,
+            bottom: 43,
         };
     } else {
         aboutMeDims = {
@@ -64,13 +70,13 @@
         };
 
         contactDims = {
-            ...makeScaledWindowDimensions(0.44, 0.5),
-            left: window.innerWidth * 0.3,
-            bottom: 20,
+            ...makeScaledWindowDimensions(0.37),
+            right: window.innerWidth * 0.2,
+            top: window.innerHeight * 0.5,
         };
 
         terminalDims = {
-            ...makeScaledWindowDimensions(0.37, 0.6),
+            ...makeScaledWindowDimensions(0.48, 0.6),
             left: 0.24 * window.innerWidth,
             bottom: 43,
         };
@@ -80,11 +86,11 @@
 <main>
     <Background />
     <StatusBar />
-    <Window config={{ ...terminalDims, title: "Terminal" }} bind:windowInterface={$terminalWindowInterface}>
-        <Terminal />
-    </Window>
     <Window config={{ ...projectsDims, title: "File Explorer" }}>
         <FileExplorer />
+    </Window>
+    <Window config={{ ...terminalDims, title: "Terminal" }} bind:windowInterface={$terminalWindowInterface}>
+        <Terminal />
     </Window>
     <Window config={{ ...contactDims, title: "Contact Info" }}>
         <DefaultStyledWindowContainer>
@@ -126,7 +132,7 @@
                         <p>
                             You can learn more about my work using the window on the right or by
                             exploring the projects highlighted on my Github. You can also interact
-                            with many of the items on this page.
+                            with the windows like you would in a real desktop environment.
                         </p>
                         <p>
                             The source code for this website can also be found

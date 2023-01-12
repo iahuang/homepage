@@ -96,7 +96,7 @@
         });
     }
 
-    function getCurrentCommand(): string {
+    function getCurrentInput(): string {
         let currentLine = term.buffer.active
             .getLine(term.buffer.active.cursorY + term.buffer.active.viewportY)
             .translateToString(true);
@@ -129,16 +129,16 @@
         }
     }
 
-    function handleCommandExecution(commandString: string): void {
+    function handleCommandExecution(input: string): void {
         term.write("\r\n");
 
         if (!get(fileSystemReady)) {
             term.writeln("error: wait for filesystem to initialize");
             return;
         }
-        console.log(commandString);
+        console.log(input);
         // filter out empty strings
-        let parts = commandString.split(" ").filter((p) => p.length);
+        let parts = input.split(" ").filter((p) => p.length);
         let args = parts.slice(1);
         let command = parts[0];
 
@@ -222,6 +222,31 @@
                     termWindow.setPosition(x, y);
                 }, deltaTimeMs);
                 break;
+            case "fullscreen":
+                document.body.requestFullscreen();
+                break;
+            case "mkdir":
+                executeCommandSafely(() => {
+                    if (!args[0]) return;
+
+                    let target = canonicalizePath(args[0]);
+
+                    fs.mkdirSync(target);
+                });
+                break;
+            case "rm":
+                executeCommandSafely(() => {
+                    if (!args[0]) return;
+
+                    let target = canonicalizePath(args[0]);
+                    
+                    if (fs.lstatSync(target).isDirectory()) {
+                        fs.rmdirSync(target);
+                    } else {
+                        fs.unlinkSync(target);
+                    }
+                });
+                break;
             default:
                 term.writeln(`Unrecognized command "${command}"`);
         }
@@ -241,7 +266,7 @@
 
                     break;
                 case "\r": // Enter
-                    handleCommandExecution(getCurrentCommand());
+                    handleCommandExecution(getCurrentInput());
                     prompt();
                     break;
                 case "\u007F": // Backspace (DEL)

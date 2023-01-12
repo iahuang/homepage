@@ -161,6 +161,13 @@
         color: #CAD3D8;
     }
 
+    main.dark-mode > :global(a) {
+        color: #CAD3D8;
+    }
+    main.dark-mode :global(a:visited) {
+        color: #7bbadd;
+    }
+
     @media (min-width: 640px) {
         main {
             max-width: none;

@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { darkMode } from "../store";
+
+
     export let iconImageURL: string;
     export let targetURL: string;
     export let title: string;
@@ -8,6 +11,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
     class="contact-card"
+    class:dark-mode={$darkMode}
     on:click={() => {
         window.location.href = targetURL;
     }}
@@ -35,6 +39,9 @@
         cursor: pointer;
 
         margin-bottom: 10px;
+    }
+    .contact-card.dark-mode {
+        border: 1px solid rgba(100, 100, 100, 0.337);
     }
 
     .contact-card > * {
@@ -66,5 +73,8 @@
         width: 32px;
         height: 32px;
         object-fit: contain;
+    }
+    .dark-mode .icon-image {
+        filter: invert(1) saturate(0) brightness(90) opacity(0.6);
     }
 </style>

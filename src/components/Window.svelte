@@ -23,7 +23,7 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
     import { get } from "svelte/store";
-    import { darkMode, largestZIndex, statusBarHeight } from "../store";
+    import { darkMode, largestZIndex, showIntroduction, statusBarHeight } from "../store";
     import { addWindowToStatusBar } from "./StatusBar.svelte";
 
     class WindowInterfaceImpl implements WindowInterface {
@@ -200,6 +200,8 @@
             function release() {
                 drag.moving = false;
                 window.removeEventListener("mouseup", release);
+
+                showIntroduction.set(false);
             }
 
             window.addEventListener("mouseup", release);
@@ -244,6 +246,16 @@
         <div class="title">
             {state_title}
         </div>
+        {#if state_focused && $showIntroduction}
+            <div class="tooltip">
+                <div class="arrow" />
+                <div class="introduction">
+                    <span style="font-size: 12pt;" class="material-symbols-rounded">
+                        pan_tool_alt
+                    </span>&nbsp; Drag to move window
+                </div>
+            </div>
+        {/if}
     </div>
     <div class="window-container">
         <slot />
@@ -283,13 +295,13 @@
         grid-template-rows: 28px auto;
 
         overflow: hidden;
-        
+
         background-color: white;
         border: 1px solid #e9e9e9;
     }
 
     .window.dark-mode {
-        background-color: #181B21;
+        background-color: #181b21;
         border: 1px solid #30323d;
     }
 
@@ -327,7 +339,7 @@
         cursor: move;
     }
 
-    .title {    
+    .title {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -387,5 +399,41 @@
         justify-content: center;
         position: absolute;
         height: 100%;
+    }
+
+    .tooltip {
+        position: absolute;
+        top: 0px;
+        right: 30%;
+        filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.25));
+        pointer-events: none;
+        z-index: 100;
+    }
+
+    .introduction {
+        background-color: #ffac2f;
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 8pt;
+        letter-spacing: 0.6pt;
+        font-weight: bold;
+        color: white;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .arrow {
+        content: "";
+        height: 0px;
+        width: 0px;
+        top: 0px;
+        margin-left: 10px; /* 1px buffer for zooming problems while rendering*/
+        border-width: 15px;
+        border-color: transparent transparent #ffac2f transparent;
+        border-style: solid;
+    }
+    .dark-mode .introduction {
+        background-color: #181b21;
     }
 </style>

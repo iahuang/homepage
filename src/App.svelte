@@ -141,8 +141,7 @@
                         </p>
                         <p>
                             You can learn more about my work using the window on the right or by
-                            exploring the projects highlighted on my Github. You can also interact
-                            with the windows like you would in a real desktop environment.
+                            exploring the projects highlighted on my Github.
                         </p>
                         <p>
                             The source code for this website can also be found

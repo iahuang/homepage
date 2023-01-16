@@ -234,6 +234,13 @@
             case "fullscreen":
                 document.body.requestFullscreen();
                 break;
+            case "reset":
+                localStorage.clear();
+                window.location.reload();
+                break;
+            case "clear":
+                term.clear();
+                break;
             case "mkdir":
                 executeCommandSafely(() => {
                     if (!args[0]) return;

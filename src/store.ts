@@ -8,3 +8,8 @@ export const terminalWindowInterface = writable(null);
 
 export const darkMode = writable(localStorage.getItem("darkMode") === "true" || false);
 darkMode.subscribe((value) => localStorage.setItem("darkMode", value.toString()));
+
+export const showIntroduction = writable(
+    localStorage.getItem("showIntroduction") !== "false"
+);
+showIntroduction.subscribe((value) => localStorage.setItem("showIntroduction", value.toString()));
